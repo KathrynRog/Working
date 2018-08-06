@@ -1,0 +1,56 @@
+//$(document).ready(function(){
+//For posting events//
+		<!-- function addVenue(){ -->
+		<!-- console.log("function is called"); -->
+		
+	  
+			<!-- var xhttp = new XMLHttpRequest(); -->
+			<!-- xhttp.open("POST", url, true); -->
+			<!-- xhttp.onload = function(){ -->
+				<!-- var name = document.getElementById("inName").value; -->
+				<!-- var postcode = document.getElementById("inPostcode").value;  -->
+				<!-- var town = document.getElementById("inTown").value; -->
+				<!-- var url = document.getElementById("inUrl").value; -->
+				<!-- var icon = document.getElementById("inIcon").value; -->
+				
+				<!-- var url = "venues.json"; -->
+				<!-- var params = "name = inName & postcode = inPostcode & town = inTown & url = inUrl & icon = inIcon"; -->
+				<!-- xhttp.send(params); -->
+			<!-- } -->
+			
+			
+		<!-- } -->
+		
+	<!-- function addVenue(){ -->
+
+				<!-- var nvName = document.getElementById("inName").value; -->
+				<!-- var nvPostcode = document.getElementById("inPostcode").value;  -->
+				<!-- var nvTown = document.getElementById("inTown").value; -->
+				<!-- var nvUrl = document.getElementById("inUrl").value; -->
+				<!-- var nvIcon = document.getElementById("inIcon").value; -->
+				
+				<!-- $.getJSON("http://127.0.0.1:8090/venues/add?", function(result){ -->
+					<!-- $("#result").html(JSON.stringify(result, undefined, 2)) -->
+    <!-- }) -->
+		<!-- console.log("I made it, but I can't explain why"); -->
+    <!-- } -->
+	
+	function addVenue(){
+	console.log("success on function call");
+	
+    var authToken = document.getElementById("auth_token");
+	var nvName = document.getElementById("inName").value;	
+	var nvPostcode = document.getElementById("inPostcode").value;
+	var nvTown = document.getElementById("inTown").value;
+	var nvUrl = document.getElementById("inUrl").value;
+	var nvIcon = document.getElementById("inIcon").value;
+
+	console.log("success on inputting data");	
+	
+	$.get("http://127.0.0.1:8090/venues/add/:?authToken=" + authToken + "&?name=" + nvName + "&?postcode=" + nvPostcode + "&?town=" + nvTown + "&?url=" + nvUrl + "&?icon=" + nvIcon, function(result){
+		$("#result").html(JSON.stringify(result, undefined, 2));
+		});
+	}
+	
+	
+$("#submitNewVenue").on("click", addVenue);

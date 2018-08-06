@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Index</title>
+  <link href = "style.css" type = "text/css" rel = "stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+ <nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle = "collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Event Management System</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li class = "active"><a href = "index.html" > Index </a></li>
+        <li><a href = "admin.html" > Admin </a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+        <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      </ul>
+    </div>
+  </div>
+</nav> 
+	
+</head>	
+	
+
+<body>
+
+<div class = "container-fluid">
+	<h1>Index</h1>
+	<div class = "row">
+		<div class = "col-sm-4" style = "background-color: #d6e0f5;">	
+			<h3> List events and venues </h3>
+			<div id = "searchOptions">
+				<p>You can use this search tool to:</p>
+				<ul>
+					<li>Find all events</li>
+					<li>Find all venues</li>
+
+				</ul>
+			</div>
+			<div class = "showAllButtons">
+				<button id= "eventsButton">Find events</button>
+				<button id= "venuesButton">Find venues</button>
+			</div>
+			<pre id = "allresult"></pre>
+		</div>
+  
+					<!-- <li>Search for events by event title</li> -->
+					<!-- <li>Search for events by date of the event</li> -->
+ 
+		<div class = "col-sm-4" style = "background-color: #c1f0e4;">
+			<div id = "searchByID">
+			<h3> Search events and venues by ID </h3>
+				<p>You can use this search tool to:</p>
+				<ul>
+					<li>Search for events by event ID</li>
+					<li>Search for venues by venue ID</li>
+				</ul>
+			<form>
+				Enter event ID:<br />
+				<input id = "myID" type="text" name="id"><br>
+				<input type="button" value="Submit" id = "submitID">
+			</form>
+  
+			<div id = "searchByVenueID">
+			<form>
+				Enter venue ID:<br />
+				<input id = "myVenueID" type="text" name="id"><br>
+				<input type="button" value="Submit" id = "submitVenueID">
+			</form>
+			</div>
+			</div>
+		<pre id = "idresult"></pre>
+		</div>
+
+	<div class = "col-sm-4" style = "background-color: #d6e0f5;">	
+		<div id = "searchByTitle">
+			<h4>Here you can search for events by entering the title or date of the event </h4>
+			<h4>You can also search for events to match title AND date</h4>
+			<form>
+				Enter event title:<br />
+				<input id = "myTitle" type="text" name="title"><br>
+					<p>AND/OR</p>
+					Type in the date you are looking for events on:<br/>
+				<input id = "myDate" type="date" name="date"><br>
+				<input type="button" value="Submit" id = "submitTitle">
+			</form>
+			<pre id = "searchresult"></pre>
+		</div>
+  
+	</div>
+	
+</div>	
+
+
+
+<script>
+$(document).ready(function(){
+
+	function getEvents(){
+    $.getJSON("http://127.0.0.1:8090/events", function(result){
+      $("#allresult").html(JSON.stringify(result, undefined, 2));
+    })
+    }
+
+	function getVenues(){
+    $.getJSON("http://127.0.0.1:8090/venues", function(result){
+      $("#allresult").html(JSON.stringify(result, undefined, 2));
+
+    })
+    }
+	
+	function getEventByID(){
+		var getID = document.getElementById('myID').value;
+		$.getJSON("http://127.0.0.1:8090/events/get/:?ID=" + getID, function(result){
+			$("#idresult").html(JSON.stringify(result, undefined, 2));
+		})
+		}
+		
+	function getVenueByID(){
+		var getVenueID = document.getElementById('myVenueID').value;
+		$.getJSON("http://127.0.0.1:8090/venues/get/:?venue=" + getVenueID, function(result){
+			$("#idresult").html(JSON.stringify(result, undefined, 2));
+		})
+		}
+		
+	function clickAlert() {
+		alert("Please enter date or name of event");
+	}
+	
+	
+  function getEventsBySearch(){
+    var inDate = document.getElementById('myDate').value; 
+	var input = document.getElementById('myTitle').value;
+	console.log(inDate);
+	console.log(input);
+	$.getJSON("http://127.0.0.1:8090/events/search?search=" + input + "&date=" + inDate, function(result){
+	    $("#searchresult").html(JSON.stringify(result, undefined, 2));
+    })
+    }
+	
+
+$("#eventsButton").on("click", getEvents);
+$("#venuesButton").on("click", getVenues);
+$("#submitTitle").on("click", getEventsBySearch); 
+$("#submitID").on("click", getEventByID); 
+$("#submitVenueID").on("click", getVenueByID); 
+
+})
+
+
+</script>
+</body>
+</html>

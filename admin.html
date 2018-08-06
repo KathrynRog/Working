@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin</title>
+  <link href = "style.css" type = "text/css" rel = "stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+ <nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle = "collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Event Management System</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li><a href = "index.html" > Index </a></li>
+        <li class = "active"><a href = "admin.html" > Admin </a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+        <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      </ul>
+    </div>
+  </div>
+</nav> 
+	
+</head>	
+
+<body>
+	
+<div class = "container-fluid">	
+	<h1>Administration page</h1>
+	<div class = "row">
+		<div class = "col-sm-4" style = "background-color: #d6e0f5;">
+			<h3>List events and venues</h3>
+			<p>You can use this search tool to:</p>
+				<ul>
+					<li>Find all events</li>
+					<li>Find all venues</li>
+				</ul>
+			<div class = "showAllButtons">
+				<button id= "eventsListButton">Show all events</button>
+				<button id= "venuesListButton">Show all venues</button>
+			</div>
+		<pre id = "lists"></pre>
+		</div>
+		
+		<div class = "col-sm-4" style = " background-color: #c1f0e4;">
+			<h3>Add a new venue:</h3>
+			<p>Enter the details for the venue you would like to add:</p>
+				<div id = "newVenue" >
+					Authorisation token (required): <br />
+					<input id = "venue_auth_token" type="text" name="Auth Token"><br>
+					Venue name (required): <br />
+					<input id = "inName" type="text" name="Name"><br>
+					Venue postcode (optional): <br />
+					<input id = "inPostcode" type="text" name="Postcode"><br>
+					Venue town (optional): <br />
+					<input id = "inTown" type="text" name="Town"><br>
+					Venue URL (optional): <br />
+					<input id = "inUrl" type="text" name="URL"><br>
+					Venue icon (optional): <br />
+					<input id = "inIcon" type="text" name="Icon"><br>
+	
+					<button id = "submitNewVenue">Submit new venue </button>
+				</div>
+			
+			<pre id = "addVenueError"></pre>
+			
+		</div>	
+		
+		<div class = "col-sm-4" style = "background-color: #d6e0f5;">
+			<h3> Add event to venue </h3>
+			<p>Enter the details for the event you would like to add:</p>
+				<div id = "newEvent">
+					Authorisation token (required): <br />
+					<input id = "event_auth_token" type="text" name="Auth Token"><br>
+					Event ID (required): <br />
+					<input id = "event_id" type="text" name="Event ID"><br>
+					Event title (required): <br />
+					<input id = "eventTitle" type="text" name="Title"><br>
+					Venue ID (required) : <br />
+					<input id = "venue_id" type="text" name="Venue ID"><br>
+					Date (required): <br />
+					<input id = "date" type="text" name="Date"><br>
+					URL (optional): <br />
+					<input id = "url" type="text" name="URL"><br>
+					Blurb (optional): <br />
+					<input id = "blurb" type="text" name="Blurb"><br>
+	
+					<input type="submit" value="Submit Event Details" id = "submitNewEvent">
+				</div>
+		</div>
+	</div>
+	
+</body>
+
+<script type = "text/javascript"
+src = "https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+</script>
+
+<script>
+$(document).ready(function(){
+
+	function getEvents(){
+    $.getJSON("http://127.0.0.1:8090/events", function(result){
+      $("#lists").html(JSON.stringify(result, undefined, 2));
+    })
+    }
+
+	function getVenues(){
+    $.getJSON("http://127.0.0.1:8090/venues", function(result){
+      $("#lists").html(JSON.stringify(result, undefined, 2));
+
+    })
+    }
+
+	function addVenue(){
+		var authToken = document.getElementById('venue_auth_token').value;
+		var venueName = document.getElementById('inName').value;
+		var venuePostcode = document.getElementById('inPostcode').value;
+		var venueTown = document.getElementById('inTown').value;
+		var venueUrl = document.getElementById('inUrl').value;
+		var venueIcon = document.getElementById('inIcon').value;
+		
+		var venue = {
+				"auth_token" : authToken,
+				"name" : venueName,
+				"postcode" : venuePostcode,
+				"town" : venueTown,
+				"url" : venueUrl,
+				"icon" : venueIcon
+			}; 
+		var data = venue;
+		
+		$.post('http://127.0.0.1:8090/admin/addVenue', data, function(result){
+		});
+	}
+		
+		
+	function addEvent(){
+		console.log("event called");
+		var eventAuthToken = document.getElementById('event_auth_token').value;
+		var eventId = document.getElementById('event_id').value;
+		var eventTitle = document.getElementById('eventTitle').value;
+		var eVenueId = document.getElementById('venue_id').value;
+		var eventDate = document.getElementById('date').value;
+		var eventUrl = document.getElementById('url').value;
+		var eventBlurb = document.getElementById('blurb').value;
+
+		var ev = {
+				"auth_token" : eventAuthToken,
+				"event_id" : eventId,
+				"title" : eventTitle,
+				"venue_id" : eVenueId,
+				"blurb" : eventBlurb,
+				"date" : eventDate,
+				"url" : eventUrl
+			}; 	
+		var data = ev;
+		console.log(data);
+		
+		$.post('http://127.0.0.1:8090/admin/addEvent', data, function(result){
+		}, 'json');		
+	}
+
+		
+		
+		
+		
+
+		
+	
+	
+$("#eventsListButton").on("click", getEvents);
+$("#venuesListButton").on("click", getVenues);
+$("#submitNewVenue").on("click", addVenue);
+$("#submitNewEvent").on("click", addEvent);
+
+
+})
+
+</script>
+</html> 
